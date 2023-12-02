@@ -3,7 +3,7 @@
   "guest": {
     "data_max_length": 999999,
     "debug": {
-      "clear_log": true,
+      "clear_log": false,
       "console": {
         "content": false,
         "length": false
@@ -19,7 +19,7 @@
   "host": {
     "data_max_length": 999999,
     "debug": {
-      "clear_log": true,
+      "clear_log": false,
       "console": {
         "content": false,
         "length": false

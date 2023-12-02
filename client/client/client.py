@@ -55,7 +55,6 @@ class AdvancedSocket(socket.socket):
 
             try:
                 self.sendall(sorted_data)
-                print("time out!")
             except ConnectionError as e:
                 self.log.error(e)
                 sys.exit(-1)

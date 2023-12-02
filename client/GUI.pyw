@@ -44,5 +44,5 @@ class MainWindow(tk.Tk):
 
 
 if __name__ == "__main__":
-    root = MainWindow("client", "750x500")
+    root = MainWindow("client_v2.0.0", "750x500")
     root.mainloop()
