@@ -88,4 +88,4 @@ class GuestClient(client.Client):
         for thd in threads:
             thd.start()
 
-        return threads  # FIXME: stuck here
+        return threads

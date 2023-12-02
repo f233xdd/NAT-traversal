@@ -31,7 +31,7 @@ def start(server_addr: tuple[str, int] | None = None,
 
     guest = client.GuestClient(addr, port, is_crypt, log)
 
-    functions = [guest.send_server_data, guest.get_server_data, guest.local_server_main]
+    functions = [guest.send_server_data, guest.get_server_data]
 
     if __name__ == "__main__":
         daemon = True
@@ -40,16 +40,13 @@ def start(server_addr: tuple[str, int] | None = None,
 
     for thread in threads:
         thread.start()
-    print("qqq")
-    print(guest.local_server_main(daemon=daemon))
-    # threads.extend(guest.local_server_main(daemon=daemon))
-    print(4)
+
+    threads.extend(guest.local_server_main(daemon=daemon))
     print(threads)
 
     killed = False
     while True:
         for _thd in threads:
-            print(threads)
             if not _thd.is_alive():
                 print("NOT ALIVE")
                 for thd in threads:  # interrupt threads
@@ -77,8 +74,9 @@ def main(server_addr: tuple[str, int] | None = None,
          public=None):
     try:
         start(server_addr, virtual_port, public)
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as e:
         print("Canceled by [Ctrl-C]")
+        print(e)
 
 
 if __name__ == "__main__":
