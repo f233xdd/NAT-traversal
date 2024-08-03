@@ -25,6 +25,7 @@ class AdvancedSocket(socket.socket):
         self.__tcp_data_packer = tool.TCPDataPacker(log=self.log)
 
     def recv_all(self, max_length=None) -> typing.Iterator[bytes]:
+        """recv data and divide it into individuals in order"""
         self.settimeout(5)
         while True:
             try:
@@ -49,6 +50,7 @@ class AdvancedSocket(socket.socket):
             yield sorted_data
 
     def send_all(self, data: bytes):
+        """send data packed with its information"""
         self.__tcp_data_packer.put(data)
         self.settimeout(5)
         for sorted_data in self.__tcp_data_packer.packages:
@@ -66,7 +68,7 @@ class AdvancedSocket(socket.socket):
 
 
 class Client(object):
-    """the part which connected with a server, provide two queues to pass data"""
+    """the part which connects with a server, provide two queues to pass data"""
 
     def __init__(self, server_addr: tuple[str, int], is_crypt, logger):
         self.log: logging.Logger = logger
@@ -107,11 +109,13 @@ class Client(object):
             sys.exit(-1)
 
     def __get_key(self):
+        """get decrypt key"""
+        # recieve RSA key
         pem = next(self.__server.recv_all())
         self.__rsa.load_key(pem)
         self.log.debug("load public key")
         self.__got_public_key.set()
-
+        # pass key by RSA
         d = next(self.__server.recv_all())
         key = self.__rsa.decrypt(d)
         self.__cipher.load_key(key)
@@ -119,10 +123,12 @@ class Client(object):
         self.log.info("Ready to decrypt")
 
     def __send_key(self):
+        """send decrypt key"""
+        # send RSA key
         pem = self.__rsa.get_public_key()
         self.__server.send_all(pem)
         self.log.debug("send public key")
-
+        # pass key by RSA
         self.__got_public_key.wait()
         key = self.__rsa.encrypt(self.__cipher.encrypt_key)
         self.__server.send_all(key)

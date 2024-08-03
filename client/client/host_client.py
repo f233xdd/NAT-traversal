@@ -15,8 +15,6 @@ class HostClient(client.Client):
         self.local_port = local_port
         self.__virtual_client: socket.socket | None = None
 
-        self.__get_func_alive: bool = True
-
     def __connect_local(self):
         """connect with local as a guest"""
         self.__virtual_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,10 +71,8 @@ class HostClient(client.Client):
                     self.log.debug(msg)
 
         except ConnectionError as error:
-            self.__get_func_alive = False
             self.log.error(f"{error}")
         except SystemExit:
-            self.__get_func_alive = False
             self.__virtual_client.shutdown(socket.SHUT_RDWR)
             self.__virtual_client.close()
             self.log.debug("exit and close socket")
